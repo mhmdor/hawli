@@ -66,6 +66,12 @@ flutter {
     source '../..'
 }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+repositories {
+ mavenCentral()
+ maven { url 'http://maven.usehover.com/releases' }
 }
+dependencies {
+ implementation('com.hover:android-sdk:1.7.3') { transitive = true; }
+ implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
