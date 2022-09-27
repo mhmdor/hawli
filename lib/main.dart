@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedpage = 2;
 
   final _pageNo = [
-    favorityPage(),
+    const favorityPage(),
     const Orders(),
     const Home(),
     const Users(),

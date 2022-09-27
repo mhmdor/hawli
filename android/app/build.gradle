@@ -68,7 +68,9 @@ flutter {
 
 repositories {
  mavenCentral()
- maven { url 'http://maven.usehover.com/releases' }
+ maven { url 'http://maven.usehover.com/releases'
+ setAllowInsecureProtocol(true);
+  }
 }
 dependencies {
  implementation('com.hover:android-sdk:1.7.3') { transitive = true; }
