@@ -1,17 +1,12 @@
 package com.example.flutter_application_1;
 import android.content.Intent;
-import android.os.Bundle;
-
 import com.hover.sdk.api.Hover;
 import com.hover.sdk.api.HoverParameters;
-
 import java.util.Map;
-
 import io.flutter.Log;
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
-
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
@@ -57,4 +52,3 @@ public class MainActivity extends FlutterActivity {
         );
     }
 }
-

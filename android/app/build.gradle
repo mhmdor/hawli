@@ -76,4 +76,3 @@ dependencies {
  implementation('com.hover:android-sdk:1.7.3') { transitive = true; }
  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-
