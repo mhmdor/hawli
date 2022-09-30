@@ -90,7 +90,7 @@ class _favorityPageState extends State<favorityPage> {
             children: <Widget>[
               _buildNumberTextField(),
               _buildAmountTextField(),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     sendMoney(
