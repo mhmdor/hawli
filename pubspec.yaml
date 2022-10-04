@@ -39,6 +39,9 @@ dependencies:
   permission_handler: ^10.0.1
   double_back_to_close_app: ^2.1.0
   intl: ^0.17.0
+  hover_ussd: ^1.0.0
+  
+
   
 
 dev_dependencies:
