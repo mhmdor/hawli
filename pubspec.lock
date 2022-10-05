@@ -116,13 +116,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  hover_ussd:
-    dependency: "direct main"
-    description:
-      name: hover_ussd
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   intl:
     dependency: "direct main"
     description:
