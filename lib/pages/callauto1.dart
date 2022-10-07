@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hawli/ussd_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../ussd_service.dart';
+
 
 
 class favorityPage extends StatefulWidget {
@@ -36,8 +38,8 @@ class _favorityPageState extends State<favorityPage> {
         throw Exception("permission missing");
       }
 
-     
-      responseMessage = await UssdService.makeRequest( 2, _requestCode);
+      // SimData simData = await SimDataPlugin.getSimData();
+      responseMessage = await UssdService.makeRequest(2, _requestCode);
       setState(() {
         _requestState = RequestState.success;
         _responseMessage = responseMessage;
@@ -53,7 +55,8 @@ class _favorityPageState extends State<favorityPage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return MaterialApp(
+      home: Scaffold(
         appBar: AppBar(
           title: const Text('Ussd Plugin demo'),
         ),
@@ -122,7 +125,7 @@ class _favorityPageState extends State<favorityPage> {
                 ]
               ]),
         ),
-      
+      ),
     );
   }
 }

@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 /// See the section for sendUssdRequest in https://developer.android.com/reference/android/telephony/TelephonyManager.html
 
 class UssdService {
-  static const MethodChannel _channel =
-      MethodChannel("com.vincentkammerer.ussd_service/plugin_channel");
+  static const platform = MethodChannel('com.vincentkammerer.ussd_service/plugin_channel');
+ 
 
   /// Performs the USSD request and returns the response
   static Future<String> makeRequest(
@@ -15,7 +15,7 @@ class UssdService {
     String code, [
     Duration timeout = const Duration(seconds: 10),
   ]) async {
-    final String response = await _channel
+    final String response = await platform
         .invokeMethod(
           "makeRequest",
           {"subscriptionId": subscriptionId, "code": code},
