@@ -1,5 +1,6 @@
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:hawli/pages/callauto.dart';
 import 'package:hawli/pages/callauto1.dart';
 import 'package:hawli/pages/entrusting.dart';
 import 'package:hawli/pages/home.dart';
@@ -45,8 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedpage = 2;
 
   final _pageNo = [
-     favorityPage(),
-    const Orders(),
+     const favorityPage(),
+    // const Orders(),
+    const Favorite(),
     const Home(),
     const Users(),
     const Entrusting(),

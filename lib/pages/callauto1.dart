@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-import '../ussd_service.dart';
+import 'package:ussd_advanced/ussd_advanced.dart';
+
+
 
 
 
@@ -12,45 +11,23 @@ class favorityPage extends StatefulWidget {
   const favorityPage({Key? key}) : super(key: key);
 
   @override
-  _favorityPageState createState() => _favorityPageState();
-}
-
-enum RequestState {
-  ongoing,
-  success,
-  error,
+  State<favorityPage> createState() => _favorityPageState();
 }
 
 class _favorityPageState extends State<favorityPage> {
-  RequestState? _requestState;
-  String _requestCode = "";
-  String _responseCode = "";
-  String _responseMessage = "";
+ late TextEditingController _controller;
+  String? _response;
 
-  Future<void> sendUssdRequest() async {
-    setState(() {
-      _requestState = RequestState.ongoing;
-    });
-    try {
-      String responseMessage;
-      await Permission.phone.request();
-      if (!await Permission.phone.isGranted) {
-        throw Exception("permission missing");
-      }
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
 
-      // SimData simData = await SimDataPlugin.getSimData();
-      responseMessage = await UssdService.makeRequest(2, _requestCode);
-      setState(() {
-        _requestState = RequestState.success;
-        _responseMessage = responseMessage;
-      });
-    } on PlatformException catch (e) {
-      setState(() {
-        _requestState = RequestState.error;
-        _responseCode = e is PlatformException ? e.code : "";
-        _responseMessage = e.message ?? '';
-      });
-    }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,74 +35,55 @@ class _favorityPageState extends State<favorityPage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Ussd Plugin demo'),
+          title: const Text('Ussd Plugin example'),
         ),
-        body: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Enter Code',
-                  ),
-                  onChanged: (newValue) {
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            // text input
+            TextField(
+              controller: _controller,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(labelText: 'Ussd code'),
+            ),
+
+            // dispaly responce if any
+            if (_response != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(_response!),
+              ),
+
+            // buttons
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    UssdAdvanced.sendUssd(
+                        code: _controller.text, subscriptionId: 1);
+                  },
+                  child: const Text('norma\nrequest'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    String? _res = await UssdAdvanced.sendAdvancedUssd(
+                        code: _controller.text, subscriptionId: 1);
                     setState(() {
-                      _requestCode = newValue;
+                      _response = _res;
                     });
                   },
+                  child: const Text('single session\nrequest'),
                 ),
-                const SizedBox(height: 20),
-                MaterialButton(
-                  color: Colors.blue,
-                  textColor: Colors.white,
-                  onPressed: _requestState == RequestState.ongoing
-                      ? null
-                      : () {
-                          sendUssdRequest();
-                        },
-                  child: const Text('Send Ussd request'),
-                ),
-                const SizedBox(height: 20),
-                if (_requestState == RequestState.ongoing)
-                  Row(
-                    children: const <Widget>[
-                      SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(),
-                      ),
-                      SizedBox(width: 24),
-                      Text('Ongoing request...'),
-                    ],
-                  ),
-                if (_requestState == RequestState.success) ...[
-                  const Text('Last request was successful.'),
-                  const SizedBox(height: 10),
-                  const Text('Response was:'),
-                  Text(
-                    _responseMessage,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-                if (_requestState == RequestState.error) ...[
-                  const Text('Last request was not successful'),
-                  const SizedBox(height: 10),
-                  const Text('Error code was:'),
-                  Text(
-                    _responseCode,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text('Error message was:'),
-                  Text(
-                    _responseMessage,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ]
-              ]),
+                
+              ],
+            )
+          ],
         ),
       ),
     );
   }
+
 }
