@@ -1,18 +1,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:hawli/widgets/news.dart';
-import '../widgets/OnGoingTask1.dart';
-// import 'package:sizer/sizer.dart';
+import 'package:hawli/widgets/statics.dart';
 
-class Entrusting extends StatefulWidget {
-  const Entrusting({Key? key}) : super(key: key);
+
+
+class statics extends StatefulWidget {
+  const statics({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Entrusting> {
+class _HomeState extends State<statics> {
   @override
   Widget build(BuildContext context) {
    
@@ -39,23 +40,32 @@ class _HomeState extends State<Entrusting> {
                  SizedBox(
                   height: 30,
                 ),
-                 OnGoingTask1(),
+                 staticsBlock(
+                   title: 'احصائيات المستخدمين آخر شهر', icon: Icons.account_box,
+                 ),
                  SizedBox(
                   height: 30,
                 ),
-                 OnGoingTask1(),
+                 staticsBlock(
+                   title: 'الارصدة', icon: Icons.add_box,
+                 ),
                  SizedBox(
                   height: 30,
                 ),
-                 OnGoingTask1(),
+                 staticsBlock(
+                   title: 'العمليات', icon: Icons.add_chart,
+                 ),
                  SizedBox(
                   height: 30,
                 ),
-                 OnGoingTask1(),
-                 SizedBox(
-                  height: 30,
-                ),
-                 OnGoingTask1(),
+                 staticsBlock(
+                   title: 'الاحصائيات اخر شهر', icon: Icons.alarm_sharp,
+                 ),
+               
+                
+                
+
+                
               ],
             ),
           ),

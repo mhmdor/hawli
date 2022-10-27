@@ -1,70 +1,193 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:hawli/controller/databasehelper.dart';
+import 'package:hawli/pages/login.dart';
 
 class NavBar extends StatelessWidget {
+  NavBar({super.key});
+  DatabaseHelper databaseHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.blueGrey,
       child: ListView(
-        // Remove padding
-        padding: EdgeInsets.zero,
         children: [
-          UserAccountsDrawerHeader(
-            accountName: Text('Oflutter.com'),
-            accountEmail: Text('example@gmail.com'),
-            currentAccountPicture: CircleAvatar(
-              child: ClipOval(
-                child: Image.network(
-                  'https://oflutter.com/wp-content/uploads/2021/02/girl-profile.png',
-                  fit: BoxFit.cover,
-                  width: 90,
-                  height: 90,
-                ),
-              ),
-            ),
+          Container(
+            height: 150,
             decoration: BoxDecoration(
-              color: Colors.blue,
-              image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: NetworkImage(
-                      'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg')),
+              borderRadius: BorderRadius.circular(5),
+              color: Color.fromARGB(255, 247, 246, 246),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                ClipOval(
+                  child: SvgPicture.asset(
+                    'assets/logo.svg',
+                    height: 80,
+                    width: 80,
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      'محمد عبد الغني',
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 54, 70, 78),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '0988888888',
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 116, 147, 162),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
+          const Divider(
+            color: Colors.white,
+          ),
+          const Divider(
+            color: Colors.white,
+          ),
           ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Favorites'),
+            leading: const Icon(
+              Icons.favorite,
+              color: Colors.white,
+            ),
+            title: const Text(
+              'Favorites',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () => null,
           ),
           ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Friends'),
+            leading: const Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
+            title: const Text(
+              'Friends',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () => null,
           ),
           ListTile(
-            leading: Icon(Icons.share),
-            title: Text('Share'),
+            leading: const Icon(
+              Icons.share,
+              color: Colors.white,
+            ),
+            title: const Text(
+              'Share',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () => null,
           ),
-          ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('Request'),
+          const ListTile(
+            leading: Icon(
+              Icons.notifications,
+              color: Colors.white,
+            ),
+            title: Text(
+              'Request',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: () => null,
+          const Divider(
+            color: Colors.white,
+          ),
+          const Divider(
+            color: Colors.white,
           ),
           ListTile(
-            leading: Icon(Icons.description),
-            title: Text('Policies'),
-            onTap: () => null,
+            leading: const Icon(
+              Icons.logout_rounded,
+              color: Colors.white,
+            ),
+            title: const Text(
+              'تسجيل خروج  ',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            onTap: () => {
+              
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Stack(
+                          children: <Widget>[
+                            Positioned(
+                              right: -40.0,
+                              top: -40.0,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(Icons.close),
+                                  backgroundColor: Colors.red,
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                   Navigator.of(context).pop();
+                                  databaseHelper.logout();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const SignIn(),
+                                    ),
+                                  );
+                                },
+                                child: Text('تسجيل خروج'))
+                          ],
+                        ),
+                      );
+                    })
+              },
+            
           ),
-          Divider(),
+          const Divider(
+            color: Colors.white,
+          ),
+          const Divider(
+            color: Colors.white,
+          ),
           ListTile(
-            title: Text('Exit'),
-            leading: Icon(Icons.exit_to_app),
-            onTap: () => null,
+            title: const Text(
+              'إغلاق التطبيق',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            leading: const Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+            ),
+            onTap: () => exit(0),
           ),
+          const Divider(
+            color: Colors.white,
+          ),
+          const Divider(
+            color: Colors.white,
+          )
         ],
       ),
     );

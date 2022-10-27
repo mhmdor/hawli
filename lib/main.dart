@@ -1,13 +1,14 @@
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:hawli/NavBar.dart';
 import 'package:hawli/pages/callauto.dart';
-import 'package:hawli/pages/callauto1.dart';
 import 'package:hawli/pages/entrusting.dart';
 import 'package:hawli/pages/home.dart';
 import 'package:hawli/pages/orders.dart';
+import 'package:hawli/pages/splashscreen.dart';
+import 'package:hawli/pages/statics.dart';
 import 'package:hawli/pages/users.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: const MyHomePage(selectedpage: 2),
+      home: const SplashScreen(),
+      routes: <String,WidgetBuilder>{
+        '/home' :(context) => (const MyHomePage(selectedpage: 2))
+      }
+      // home: const MyHomePage(selectedpage: 2),
     );
   }
 }
@@ -46,9 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedpage = 2;
 
   final _pageNo = [
-     const favorityPage(),
-    // const Orders(),
-    const Favorite(),
+    const Callapi(),
+    const Orders(),
     const Home(),
     const Users(),
     const Entrusting(),
@@ -60,7 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 216, 216, 216),
+      backgroundColor: Colors.blueGrey,
+       drawer:  NavBar(),
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.blueGrey,
@@ -75,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: DoubleBackToCloseApp(
         snackBar: const SnackBar(
-          padding: EdgeInsets.only(bottom: 12,top: 12),
+          padding: EdgeInsets.only(bottom: 12, top: 12),
           content: Text('أضغط مجددا للخروج'),
         ),
         child: _pageNo[selectedpage],

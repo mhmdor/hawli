@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:hawli/NavBar.dart';
 import 'package:hawli/widgets/news.dart';
+import 'package:hawli/widgets/posination.dart';
 import 'package:hawli/widgets/task_group.dart';
-
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -16,38 +18,45 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
-      extendBody: true, 
-      body: _buildBody());
+     
+        backgroundColor: Colors.blueGrey[800],
+        extendBody: true,
+        body: _buildBody());
   }
 
-  Stack _buildBody() {
-    return Stack(
-      children: [
-        
-        SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 65,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  SafeArea _buildBody() {
+    final size = MediaQuery.of(context).size;
+
+    return SafeArea(
+        child: SizedBox(
+            height: size.height,
+            child: Stack(
               children: [
-                const SizedBox(
-                  height: 30,
+                
+                const Posination(),
+                SingleChildScrollView(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 65,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        buildGrid(),
+                        
+                      ],
+                    ),
+                  ),
                 ),
-                buildGrid(),
-                const SizedBox(
-                  height: 40,
-                ),
+                news(),
+                
+                
               ],
-            ),
-          ),
-        ),
-       news(),
-      ],
-    );
+            )));
   }
 
   StaggeredGrid buildGrid() {
@@ -68,7 +77,6 @@ class _HomeState extends State<Home> {
           ),
         ),
         StaggeredGridTile.count(
-          
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: TaskGroupContainer(
@@ -112,7 +120,7 @@ class _HomeState extends State<Home> {
             color: Colors.pink,
             icon: Icons.person_add,
             taskCount: 2,
-             isSmall: true,
+            isSmall: true,
             taskGroup: " مستخدم جديد",
           ),
         ),
@@ -132,6 +140,4 @@ class _HomeState extends State<Home> {
       ],
     );
   }
-
- 
 }
