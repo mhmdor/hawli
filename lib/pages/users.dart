@@ -1,25 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:hawli/pages/entrustingUser.dart';
-import 'package:hawli/widgets/news.dart';
-
-// import 'package:sizer/sizer.dart';
-
-class User {
-  String name;
-  int age;
-  String role;
-  String role1;
-  String role2;
-  String role3;
-
-  User(
-      {required this.name,
-      required this.age,
-      required this.role,
-      required this.role3,
-      required this.role1,
-      required this.role2});
-}
+import 'package:hawli/controller/databasehelper.dart';
+import 'package:hawli/pages/editUser.dart';
+import 'package:hawli/pages/paymentsUser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Users extends StatefulWidget {
   const Users({Key? key}) : super(key: key);
@@ -32,93 +18,44 @@ class Users extends StatefulWidget {
 class _HomeState extends State<Users> {
   int? sortColumnIndex;
   bool isAscending = false;
-  List<User> users = [
-    User(
-        name: "Sarah Sarah Sarah",
-        age: 19,
-        role: "Student",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "Janine",
-        age: 43,
-        role: "Professor",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "Sarhah",
-        age: 59,
-        role: "hh",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 23,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 20,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 17,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 17,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 17,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 18,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 79,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-    User(
-        name: "wesaam",
-        age: 12,
-        role: "gg",
-        role1: "Student",
-        role2: "Student",
-        role3: "Student"),
-  ];
-
-  List<User> usersFiltered = [];
+  List usersFiltered = [];
   TextEditingController controller = TextEditingController();
   String _searchResult = '';
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  // ignore: non_constant_identifier_names
+  List Users = [];
+  bool is_loading = false;
+  final _formKey = GlobalKey<FormState>();
+
+  getUser() async {
+    setState(() {
+      is_loading = true;
+    });
+    String url = "${databaseHelper.serverUrl}/distributor/distributor-user";
+    final prefs = await SharedPreferences.getInstance();
+    // ignore: constant_identifier_names
+    const Key = 'token';
+    final value = prefs.get(Key);
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $value'},
+    );
+    setState(() {
+      Users.addAll(json.decode(response.body)["users"]);
+      usersFiltered = Users;
+      print(usersFiltered);
+      is_loading = false;
+    });
+
+    // return status["users"][2];
+  }
+
   @override
   void initState() {
     super.initState();
-    usersFiltered = users;
+
+    getUser();
   }
 
   @override
@@ -133,7 +70,6 @@ class _HomeState extends State<Users> {
     return SingleChildScrollView(
       child: Column(
         children: [
-           news(),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Center(
@@ -148,11 +84,13 @@ class _HomeState extends State<Users> {
                       onChanged: (value) {
                         setState(() {
                           _searchResult = value;
-                          usersFiltered = users
-                              .where((user) =>
-                                  user.name.contains(_searchResult) ||
-                                  user.role.contains(_searchResult) ||
-                                  user.age.toString().contains(_searchResult))
+                          usersFiltered = Users.where((user) =>
+                                  user["name"].contains(_searchResult) ||
+                                  user["phone"]
+                                      .toString()
+                                      .contains(_searchResult) ||
+                                  user["address"].contains(_searchResult) ||
+                                  user["id"].toString().contains(_searchResult))
                               .toList();
                         });
                       }),
@@ -162,7 +100,7 @@ class _HomeState extends State<Users> {
                       setState(() {
                         controller.clear();
                         _searchResult = '';
-                        usersFiltered = users;
+                        usersFiltered = Users;
                       });
                     },
                   ),
@@ -185,160 +123,188 @@ class _HomeState extends State<Users> {
                       scrollDirection: Axis.vertical,
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 4,
-                              color: const Color.fromARGB(255, 42, 41, 41),
-                            ),
-                          ),
-                          child: DataTable(
-                            sortAscending: isAscending,
-                            sortColumnIndex: sortColumnIndex,
-                            border: TableBorder.symmetric(
-                              inside: const BorderSide(width: 1.5),
-                            ),
-                            headingRowColor: MaterialStateColor.resolveWith(
-                                (states) => Colors.blueGrey),
-                            dataRowColor: MaterialStateColor.resolveWith(
-                                (states) =>
-                                    const Color.fromARGB(255, 247, 246, 246)),
-                            columns: <DataColumn>[
-                              DataColumn(
-                                label: const Text(
-                                  'الاسم',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white,
-                                      fontSize: 18),
+                        child: is_loading
+                            ? const CircularProgressIndicator()
+                            : Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 4,
+                                    color:
+                                        const Color.fromARGB(255, 42, 41, 41),
+                                  ),
                                 ),
-                                onSort: onSort,
-                              ),
-                              DataColumn(
-                                label: const Text(
-                                  'رصيد',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white,
-                                      fontSize: 18),
-                                ),
-                                onSort: onSort,
-                              ),
-                              DataColumn(
-                                label: const Text(
-                                  'عمليات',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white,
-                                      fontSize: 18),
-                                ),
-                                onSort: onSort,
-                              ),
-                              DataColumn(
-                                label: const Text(
-                                  'اضافي',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white,
-                                      fontSize: 18),
-                                ),
-                                onSort: onSort,
-                              ),
-                              DataColumn(
-                                label: const Text(
-                                  'اضافي',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white,
-                                      fontSize: 18),
-                                ),
-                                onSort: onSort,
-                              ),
-                              DataColumn(
-                                label: const Text(
-                                  'اضافي',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white,
-                                      fontSize: 18),
-                                ),
-                                onSort: onSort,
-                              ),
-                              DataColumn(
-                                label: const Text(
-                                  'Role3',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.white,
-                                      fontSize: 18),
-                                ),
-                                onSort: onSort,
-                              ),
-                            ],
-                            rows: List.generate(
-                              usersFiltered.length,
-                              (index) => DataRow(
-                                cells: <DataCell>[
-                                  DataCell(Text(
-                                    usersFiltered[index].name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                child: DataTable(
+                                  sortAscending: isAscending,
+                                  sortColumnIndex: sortColumnIndex,
+                                  border: TableBorder.symmetric(
+                                    inside: const BorderSide(width: 1.5),
+                                  ),
+                                  headingRowColor:
+                                      MaterialStateColor.resolveWith(
+                                          (states) => Colors.blueGrey),
+                                  dataRowColor: MaterialStateColor.resolveWith(
+                                      (states) => const Color.fromARGB(
+                                          255, 247, 246, 246)),
+                                  columns: <DataColumn>[
+                                    DataColumn(
+                                      label: const Text(
+                                        'الاسم',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                      onSort: onSort,
                                     ),
-                                  )),
-                                  DataCell(Text(
-                                    usersFiltered[index].age.toString(),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    DataColumn(
+                                      label: const Text(
+                                        'رصيد',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                      onSort: onSort,
                                     ),
-                                  )),
-                                  DataCell(
-                                    ElevatedButton(
-                                      child: const Text('عمليات التحويل'),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,MaterialPageRoute(builder: (context) => const EntrustingUser())
-                                        );
-
-                                        
-                                      },
+                                    const DataColumn(
+                                      label: Text(
+                                        'الدفعات',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                      // onSort: onSort,
+                                    ),
+                                    const DataColumn(
+                                      label: Text(
+                                        'تعديل',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                      // onSort: onSort,
+                                    ),
+                                    const DataColumn(
+                                      label: Text(
+                                        'الموبايل',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                      // onSort: onSort,
+                                    ),
+                                    const DataColumn(
+                                      label: Text(
+                                        'العنوان',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                      // onSort: onSort,
+                                    ),
+                                    DataColumn(
+                                      label: const Text(
+                                        'الرقم',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.white,
+                                            fontSize: 18),
+                                      ),
+                                      onSort: onSort,
+                                    ),
+                                  ],
+                                  rows: List.generate(
+                                    usersFiltered.length,
+                                    (index) => DataRow(
+                                      cells: <DataCell>[
+                                        DataCell(Center(
+                                          child: Text(
+                                            usersFiltered[index]["name"],
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )),
+                                        DataCell(Center(
+                                          child: Text(
+                                            usersFiltered[index]["balance"]
+                                                .toString(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )),
+                                        DataCell(
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color.fromARGB(
+                                                    255, 184, 129, 10)),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>EntrustingUser(name: usersFiltered[index]["name"], id: usersFiltered[index]["id"].toString())),
+                                              );
+                                            },
+                                            child: const Text("الدفعات"),
+                                          ),
+                                        ),
+                                        DataCell(
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: Color.fromARGB(255, 6, 106, 95)),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>EditUser(name: usersFiltered[index]["name"], id: usersFiltered[index]["id"].toString(), minBalance: usersFiltered[index]["min_balance"].toString(), ratio: usersFiltered[index]["ratio"].toString(),)),
+                                              );
+                                            },
+                                            child: const Text("تعديل المعلومات"),
+                                          ),
+                                        ),
+                                        DataCell(Center(
+                                          child: Text(
+                                            usersFiltered[index]["phone"],
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )),
+                                        DataCell(Center(
+                                          child: Text(
+                                            usersFiltered[index]["address"],
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )),
+                                        DataCell(Center(
+                                          child: Text(
+                                            usersFiltered[index]["id"]
+                                                .toString(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )),
+                                      ],
                                     ),
                                   ),
-                                  DataCell(Text(
-                                    usersFiltered[index].role,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                                  DataCell(Text(
-                                    usersFiltered[index].role1,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                                  DataCell(Text(
-                                    usersFiltered[index].role2,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                                  DataCell(Text(
-                                    usersFiltered[index].role3,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -353,14 +319,14 @@ class _HomeState extends State<Users> {
 
   void onSort(int columnIndex, bool ascending) {
     if (columnIndex == 0) {
-      users.sort(
-          (user1, user2) => compareString(ascending, user1.name, user2.name));
+      Users.sort(
+          (user1, user2) => compareInt(ascending, user1["id"], user2["id"]));
     } else if (columnIndex == 1) {
-      users.sort((user1, user2) =>
-          compareString(ascending, '${user1.age}', '${user2.age}'));
+      Users.sort((user1, user2) =>
+          compareString(ascending, user1["name"], user2["name"]));
     } else if (columnIndex == 2) {
-      users.sort(
-          (user1, user2) => compareString(ascending, user1.role, user2.role));
+      Users.sort((user1, user2) =>
+          compareInt(ascending, user1["balance"], user2["balance"]));
     }
 
     setState(() {
@@ -370,5 +336,7 @@ class _HomeState extends State<Users> {
   }
 
   int compareString(bool ascending, String value1, String value2) =>
+      ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+  int compareInt(bool ascending, int value1, int value2) =>
       ascending ? value1.compareTo(value2) : value2.compareTo(value1);
 }

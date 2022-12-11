@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:hawli/NavBar.dart';
 import 'package:hawli/widgets/news.dart';
 import 'package:hawli/widgets/posination.dart';
 import 'package:hawli/widgets/task_group.dart';
+
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,6 +14,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,9 +72,9 @@ class _HomeState extends State<Home> {
           child: TaskGroupContainer(
             selectedpage: 1,
             color: Colors.red,
-            icon: Icons.shopping_cart,
-            taskCount: 45,
-            taskGroup: "الطلبات",
+            icon: Icons.card_travel,
+            
+            taskGroup: "الطلبات الجديدة",
           ),
         ),
         StaggeredGridTile.count(
@@ -84,8 +85,8 @@ class _HomeState extends State<Home> {
             color: Colors.blue,
             isSmall: true,
             icon: Icons.auto_stories,
-            taskCount: 5,
-            taskGroup: "ايداعات",
+            
+            taskGroup: "الطلبات المنتهية",
           ),
         ),
         StaggeredGridTile.count(
@@ -95,7 +96,7 @@ class _HomeState extends State<Home> {
             selectedpage: 3,
             color: Colors.green,
             icon: Icons.person,
-            taskCount: 2,
+            
             taskGroup: "المستخدمين",
           ),
         ),
@@ -106,8 +107,19 @@ class _HomeState extends State<Home> {
             selectedpage: 0,
             color: Colors.brown,
             isSmall: true,
-            icon: Icons.article_rounded,
-            taskCount: 9,
+            icon: Icons.money,
+            
+            taskGroup: "تسديد دفعة",
+          ),
+        ),
+        StaggeredGridTile.count(
+          crossAxisCellCount: 1,
+          mainAxisCellCount: 1.3,
+          child: TaskGroupContainer(
+            selectedpage: 1,
+            color: Colors.cyan,
+            icon: Icons.card_travel,
+            
             taskGroup: "الاحصائيات",
           ),
         ),
@@ -119,9 +131,20 @@ class _HomeState extends State<Home> {
             selectedpage: 2,
             color: Colors.pink,
             icon: Icons.person_add,
-            taskCount: 2,
+            
             isSmall: true,
             taskGroup: " مستخدم جديد",
+          ),
+        ),
+        StaggeredGridTile.count(
+          crossAxisCellCount: 1,
+          mainAxisCellCount: 1.3,
+          child: TaskGroupContainer(
+            selectedpage: 1,
+            color: Colors.purple,
+            icon: Icons.newspaper,
+            
+            taskGroup: "الشريط الأخباري",
           ),
         ),
         StaggeredGridTile.count(
@@ -132,12 +155,17 @@ class _HomeState extends State<Home> {
             selectedpage: 2,
             color: Colors.orange,
             isSmall: true,
-            icon: Icons.money_rounded,
-            taskCount: 9,
-            taskGroup: "تسديد فواتير",
+            icon: Icons.store_mall_directory_outlined,
+            
+            taskGroup: " ايداعات",
           ),
         ),
+        
       ],
     );
   }
 }
+
+
+
+

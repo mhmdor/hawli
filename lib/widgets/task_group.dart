@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hawli/main.dart';
-import 'package:hawli/pages/register.dart';
+import 'package:hawli/pages/registerUser.dart';
 
 class TaskGroupContainer extends StatelessWidget {
   final int selectedpage;
@@ -9,7 +9,7 @@ class TaskGroupContainer extends StatelessWidget {
   final IconData icon;
   final String taskGroup;
   final bool status;
-  final num taskCount;
+  
   const TaskGroupContainer({
     Key? key,
     required this.color,
@@ -18,7 +18,7 @@ class TaskGroupContainer extends StatelessWidget {
     required this.icon,
     required this.taskGroup,
     this.status = false,
-    required this.taskCount,
+   
   }) : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class TaskGroupContainer extends StatelessWidget {
         } else {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const FormPage()),
+            MaterialPageRoute(builder: (context) => const RegisterUser()),
           );
         }
       },
@@ -71,7 +71,9 @@ class TaskGroupContainer extends StatelessWidget {
             const Spacer(),
             Center(
               child: Text(
+                
                 taskGroup,
+                textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.fade,
                 style: const TextStyle(
@@ -84,15 +86,7 @@ class TaskGroupContainer extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            Center(
-              child: Text(
-                "$taskCount",
-                style: const TextStyle(
-                    color: Color.fromARGB(255, 11, 14, 22),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
+            
             const SizedBox(
               height: 5,
             ),

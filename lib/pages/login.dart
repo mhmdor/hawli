@@ -49,7 +49,9 @@ class _SignInState extends State<SignIn> {
                 bottom: MediaQuery.of(context).size.height - 100,
                 right: 20,
                 left: 20),
-          ));
+          )).closed
+              .then(
+                  (value) => Navigator.pushReplacementNamed(context, '/home'));
             
           } else {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -66,7 +68,9 @@ class _SignInState extends State<SignIn> {
                 bottom: MediaQuery.of(context).size.height - 100,
                 right: 20,
                 left: 20),
-          ));
+          )).closed
+              .then(
+                  (value) => Navigator.pushReplacementNamed(context, '/home'));
           }
 
           

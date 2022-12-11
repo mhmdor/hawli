@@ -4,10 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hawli/controller/databasehelper.dart';
 import 'package:hawli/pages/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class NavBar extends StatelessWidget {
+class NavBar extends StatefulWidget {
   NavBar({super.key});
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
   DatabaseHelper databaseHelper = DatabaseHelper();
+
+  var name = '';
+  var phone = '';
+
+  getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name')!;
+      phone = prefs.getString('phone')!;
+      
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +44,7 @@ class NavBar extends StatelessWidget {
             height: 150,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Color.fromARGB(255, 247, 246, 246),
+              color: const Color.fromARGB(255, 247, 246, 246),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -36,19 +61,19 @@ class NavBar extends StatelessWidget {
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
-                      'محمد عبد الغني',
-                      style: TextStyle(
+                      name,
+                      style: const TextStyle(
                           color: Color.fromARGB(255, 54, 70, 78),
                           fontWeight: FontWeight.bold,
-                          fontSize: 20),
+                          fontSize: 18),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Text(
-                      '0988888888',
+                      phone,
                       style: TextStyle(
                           color: Color.fromARGB(255, 116, 147, 162),
                           fontWeight: FontWeight.bold,
@@ -125,44 +150,42 @@ class NavBar extends StatelessWidget {
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
             onTap: () => {
-              
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        content: Stack(
-                          children: <Widget>[
-                            Positioned(
-                              right: -40.0,
-                              top: -40.0,
-                              child: InkResponse(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: CircleAvatar(
-                                  child: Icon(Icons.close),
-                                  backgroundColor: Colors.red,
-                                ),
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            right: -40.0,
+                            top: -40.0,
+                            child: InkResponse(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const CircleAvatar(
+                                child: Icon(Icons.close),
+                                backgroundColor: Colors.red,
                               ),
                             ),
-                            ElevatedButton(
-                                onPressed: () {
-                                   Navigator.of(context).pop();
-                                  databaseHelper.logout();
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const SignIn(),
-                                    ),
-                                  );
-                                },
-                                child: Text('تسجيل خروج'))
-                          ],
-                        ),
-                      );
-                    })
-              },
-            
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                databaseHelper.logout();
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignIn(),
+                                  ),
+                                );
+                              },
+                              child: const Text('تسجيل خروج'))
+                        ],
+                      ),
+                    );
+                  })
+            },
           ),
           const Divider(
             color: Colors.white,

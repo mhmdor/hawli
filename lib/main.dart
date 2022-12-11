@@ -1,16 +1,18 @@
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:hawli/NavBar.dart';
-import 'package:hawli/pages/callauto.dart';
-import 'package:hawli/pages/entrusting.dart';
+import 'package:hawli/pages/finishedOrders.dart';
 import 'package:hawli/pages/home.dart';
 import 'package:hawli/pages/orders.dart';
+import 'package:hawli/pages/payment.dart';
 import 'package:hawli/pages/splashscreen.dart';
-import 'package:hawli/pages/statics.dart';
 import 'package:hawli/pages/users.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void  main() async {
+
+  
   runApp(const MyApp());
 }
 
@@ -51,15 +53,32 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedpage = 2;
 
   final _pageNo = [
-    const Callapi(),
+     Payment(),
     const Orders(),
     const Home(),
     const Users(),
-    const Entrusting(),
+    const finishedOrders(),
   ];
   _MyHomePageState({
     required this.selectedpage,
   });
+  var name = '';
+  
+
+  getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name')!;
+      
+      
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +90,9 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.blueGrey,
         shadowColor: const Color.fromARGB(255, 48, 53, 69),
         toolbarHeight: 60,
-        title: const Text(
-          ' أبراهيم أبو العبد',
-          style: TextStyle(
+        title:  Text(
+         name,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -87,14 +106,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: ConvexAppBar(
         backgroundColor: Colors.blueGrey,
-        height: 60,
+        height: 70,
         curveSize: 120,
         items: const [
-          TabItem(icon: Icons.article_rounded, title: 'الاحصائيات'),
-          TabItem(icon: Icons.shopping_cart, title: 'الطلبات'),
+          TabItem(icon: Icons.article_rounded, title: 'تسديد'),
+          TabItem(icon: Icons.shopping_cart, title: 'الطلبات '),
           TabItem(icon: Icons.home, title: 'الرئيسية'),
           TabItem(icon: Icons.person, title: 'المستخدمين'),
-          TabItem(icon: Icons.auto_stories, title: 'ايداعات'),
+          TabItem(icon: Icons.auto_stories, title: 'المنتهية'),
         ],
         initialActiveIndex: selectedpage,
         onTap: (int index) {

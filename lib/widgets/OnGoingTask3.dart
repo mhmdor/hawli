@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:hawli/controller/databasehelper.dart';
 
-class OnGoingTask1 extends StatelessWidget {
-  final String name;
+class OnGoingTask3 extends StatelessWidget {
+
   final String id;
   final String value;
-  final String sim;
-  final String totalvalue;
+ 
   final String date;
-  final String phone;
-  final IconData icon;
-  final Color color;
+  
 
-  const OnGoingTask1({
+  const OnGoingTask3({
     Key? key,
-    required this.name,
+    
     required this.value,
-    required this.sim,
-    required this.totalvalue,
+    
     required this.date,
-    required this.phone,
+   
     required this.id,
-    required this.icon, required this.color,
   }) : super(key: key);
 
   @override
@@ -48,52 +43,11 @@ class OnGoingTask1 extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      color: Colors.blueGrey[700],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
+                 
+                  
+                  
                   const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const Icon(
-                        Icons.phone_android_outlined,
-                        color: Color.fromARGB(255, 20, 29, 34),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        phone,
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 138, 138, 138),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        sim,
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 138, 138, 138),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -116,15 +70,7 @@ class OnGoingTask1 extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
-                            totalvalue,
-                            style: TextStyle(
-                                color: Colors.blueGrey[900],
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
+                         
                         ],
                       ),
                     ),
@@ -168,10 +114,10 @@ class OnGoingTask1 extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Icon(
-                icon,
+              const Icon(
+                Icons.money,
                 size: 50,
-                color: color,
+                color: Color.fromARGB(255, 11, 126, 175),
               ),
             ],
           )

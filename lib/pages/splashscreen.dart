@@ -25,10 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final Key = 'token';
     final value = prefs.get(Key);
     
-    if (value != '0') {
-      // ignore: use_build_context_synchronously
-      return Navigator.pushReplacementNamed(context, '/home');
-    } else {
+    if (value == '0') {
       // ignore: use_build_context_synchronously
       return Navigator.pushReplacement(
         context,
@@ -36,6 +33,17 @@ class _SplashScreenState extends State<SplashScreen> {
           builder: (context) => const SignIn(),
         ),
       );
+    } else if (value == null) {
+      // ignore: use_build_context_synchronously
+      return Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SignIn(),
+        ),
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      return Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
