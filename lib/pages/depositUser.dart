@@ -2,17 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hawli/controller/databasehelper.dart';
-import 'package:hawli/widgets/OnGoingTask3.dart';
+
+
 import 'package:hawli/widgets/title.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
-class EntrustingUser extends StatefulWidget {
+import '../widgets/deposit.dart';
+
+class depositUser extends StatefulWidget {
   final String name;
   final String id;
-  const EntrustingUser({Key? key, required this.name, required this.id})
+  const depositUser({Key? key, required this.name, required this.id})
       : super(key: key);
 
   @override
@@ -20,13 +23,13 @@ class EntrustingUser extends StatefulWidget {
   _HomeState createState() => _HomeState(name, id);
 }
 
-class _HomeState extends State<EntrustingUser> {
+class _HomeState extends State<depositUser> {
   final String name;
   final String id;
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   // ignore: non_constant_identifier_names
-  List Payments = [];
+  List deposit = [];
   bool isLoading = false;
   var name1 = '';
 
@@ -37,9 +40,9 @@ class _HomeState extends State<EntrustingUser> {
     });
   }
 
-  getpayments() async {
+  getdeposit() async {
     print(id);
-    String url = "${databaseHelper.serverUrl}/distributor/get-payments-by-user";
+    String url = "${databaseHelper.serverUrl}/distributor/deposits-user?user_id=";
     final prefs = await SharedPreferences.getInstance();
     // ignore: constant_identifier_names
     const Key = 'token';
@@ -47,16 +50,16 @@ class _HomeState extends State<EntrustingUser> {
 
     final response = await http.get(
       Uri.parse(url).replace(
-        queryParameters: {'distributor_user_id': id},
+        queryParameters: {'user_id': id},
       ),
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $value'},
     );
 
     var state = json.decode(response.body);
+    print(state);
+    deposit.addAll(state);
 
-    Payments.addAll(state["payments"]);
-
-    print(Payments);
+    print(deposit);
     setState(() {
       isLoading = false;
     });
@@ -64,7 +67,7 @@ class _HomeState extends State<EntrustingUser> {
 
   @override
   void initState() {
-    getpayments();
+    getdeposit();
     getUser();
     isLoading = true;
     super.initState();
@@ -92,7 +95,7 @@ class _HomeState extends State<EntrustingUser> {
       body: Column(
         children: [
           Title1(
-            tilte: " دفعات $name",
+            tilte: " إيداعات $name",
           ),
           Expanded(
             child: isLoading
@@ -102,27 +105,32 @@ class _HomeState extends State<EntrustingUser> {
                       left: 25,
                       right: 25,
                     ),
-                    child: Payments.isEmpty
+                    child: deposit.isEmpty
                         ? const Center(
                             child: Text(
-                            "لايوجد دفعات ",
+                            "لايوجد إيداعات ",
                             style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold),
                           ))
                         : ListView.builder(
-                            itemCount: Payments.length,
+                            itemCount: deposit.length,
                             itemBuilder: ((context, index) {
                               return Column(
                                 children: [
                                   const SizedBox(
                                     height: 15,
                                   ),
-                                  OnGoingTask3(
-                                    date: "${Payments[index]["date"]}",
-                                    value: "${Payments[index]["value"]}",
-                                    id: "${Payments[index]["id"]}",
+                                  Deposit(
+                                    
+                                    date: "${deposit[index]["created_at"]}",
+                                    
+                                   
+                                    value: "${deposit[index]["value"]}",
+                                   
+                                    id: "${deposit[index]["id"]}", desc: "${deposit[index]["description"]}",
+                                   
                                   ),
                                   const SizedBox(
                                     height: 15,
@@ -135,5 +143,25 @@ class _HomeState extends State<EntrustingUser> {
         ],
       ),
     );
+  }
+
+  IconData selecticon(status) {
+    if (status == 2) {
+      return Icons.card_travel;
+    } else if (status == 0) {
+      return Icons.cancel_sharp;
+    } else {
+      return Icons.task_alt;
+    }
+  }
+
+  Color selectcolor(status) {
+    if (status == 2) {
+      return Colors.blue;
+    } else if (status == 0) {
+      return Colors.red;
+    } else {
+      return Colors.green;
+    }
   }
 }

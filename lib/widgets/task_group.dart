@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hawli/main.dart';
+import 'package:hawli/pages/deposit.dart';
+import 'package:hawli/pages/news.dart';
 import 'package:hawli/pages/registerUser.dart';
+import 'package:hawli/pages/statics.dart';
 
 class TaskGroupContainer extends StatelessWidget {
   final int selectedpage;
@@ -8,8 +11,8 @@ class TaskGroupContainer extends StatelessWidget {
   final bool? isSmall;
   final IconData icon;
   final String taskGroup;
-  final bool status;
-  
+  final int status;
+
   const TaskGroupContainer({
     Key? key,
     required this.color,
@@ -17,31 +20,46 @@ class TaskGroupContainer extends StatelessWidget {
     this.isSmall = false,
     required this.icon,
     required this.taskGroup,
-    this.status = false,
-   
+    this.status = 0,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (status == false) {
+        if (status == 0) {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => MyHomePage(
                         selectedpage: selectedpage,
                       )));
-        } else {
+        } else if (status == 1) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const RegisterUser()),
+          );
+        } else if (status == 3) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Deposit()),
+          );
+        } else if (status == 4) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const statics()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const News()),
           );
         }
       },
       child: Container(
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
+          border: Border.all(width: 0.5, color: Colors.black),
           color: const Color.fromARGB(255, 247, 246, 246),
           boxShadow: [
             BoxShadow(
@@ -71,7 +89,6 @@ class TaskGroupContainer extends StatelessWidget {
             const Spacer(),
             Center(
               child: Text(
-                
                 taskGroup,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -86,7 +103,6 @@ class TaskGroupContainer extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            
             const SizedBox(
               height: 5,
             ),

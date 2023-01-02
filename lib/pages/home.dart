@@ -4,7 +4,6 @@ import 'package:hawli/widgets/news.dart';
 import 'package:hawli/widgets/posination.dart';
 import 'package:hawli/widgets/task_group.dart';
 
-
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -14,13 +13,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
-        backgroundColor: Colors.blueGrey[800],
+        backgroundColor: const Color.fromARGB(255, 204, 228, 248),
         extendBody: true,
         body: _buildBody());
   }
@@ -33,7 +29,6 @@ class _HomeState extends State<Home> {
             height: size.height,
             child: Stack(
               children: [
-                
                 const Posination(),
                 SingleChildScrollView(
                   child: Container(
@@ -48,14 +43,11 @@ class _HomeState extends State<Home> {
                           height: 30,
                         ),
                         buildGrid(),
-                        
                       ],
                     ),
                   ),
                 ),
                 news(),
-                
-                
               ],
             )));
   }
@@ -73,7 +65,6 @@ class _HomeState extends State<Home> {
             selectedpage: 1,
             color: Colors.red,
             icon: Icons.card_travel,
-            
             taskGroup: "الطلبات الجديدة",
           ),
         ),
@@ -85,7 +76,6 @@ class _HomeState extends State<Home> {
             color: Colors.blue,
             isSmall: true,
             icon: Icons.auto_stories,
-            
             taskGroup: "الطلبات المنتهية",
           ),
         ),
@@ -96,7 +86,6 @@ class _HomeState extends State<Home> {
             selectedpage: 3,
             color: Colors.green,
             icon: Icons.person,
-            
             taskGroup: "المستخدمين",
           ),
         ),
@@ -108,7 +97,6 @@ class _HomeState extends State<Home> {
             color: Colors.brown,
             isSmall: true,
             icon: Icons.money,
-            
             taskGroup: "تسديد دفعة",
           ),
         ),
@@ -116,10 +104,10 @@ class _HomeState extends State<Home> {
           crossAxisCellCount: 1,
           mainAxisCellCount: 1.3,
           child: TaskGroupContainer(
-            selectedpage: 1,
+            selectedpage: 3,
+            status: 4,
             color: Colors.cyan,
             icon: Icons.card_travel,
-            
             taskGroup: "الاحصائيات",
           ),
         ),
@@ -127,11 +115,10 @@ class _HomeState extends State<Home> {
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: TaskGroupContainer(
-            status: true,
+            status: 1,
             selectedpage: 2,
             color: Colors.pink,
             icon: Icons.person_add,
-            
             isSmall: true,
             taskGroup: " مستخدم جديد",
           ),
@@ -140,10 +127,10 @@ class _HomeState extends State<Home> {
           crossAxisCellCount: 1,
           mainAxisCellCount: 1.3,
           child: TaskGroupContainer(
-            selectedpage: 1,
+            status: 2,
+            selectedpage: 2,
             color: Colors.purple,
             icon: Icons.newspaper,
-            
             taskGroup: "الشريط الأخباري",
           ),
         ),
@@ -151,21 +138,15 @@ class _HomeState extends State<Home> {
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: TaskGroupContainer(
-            status: true,
+            status: 3,
             selectedpage: 2,
             color: Colors.orange,
             isSmall: true,
             icon: Icons.store_mall_directory_outlined,
-            
             taskGroup: " ايداعات",
           ),
         ),
-        
       ],
     );
   }
 }
-
-
-
-

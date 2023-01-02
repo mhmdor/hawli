@@ -13,7 +13,6 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
- 
   DatabaseHelper databaseHelper = DatabaseHelper();
   final _formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
@@ -35,60 +34,63 @@ class _SignInState extends State<SignIn> {
             isLoading = false;
           });
           if (databaseHelper.time) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text(
-              'خطأ بالأتصال بالسيرفر يرجى المحاولة لاحقا',
-              textAlign: TextAlign.center,
-            ),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height - 100,
-                right: 20,
-                left: 20),
-          )).closed
-              .then(
-                  (value) => Navigator.pushReplacementNamed(context, '/home'));
-            
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(
+                  content: const Text(
+                    'خطأ بالأتصال بالسيرفر يرجى المحاولة لاحقا',
+                    textAlign: TextAlign.center,
+                  ),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  margin: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height - 200,
+                      right: 20,
+                      left: 20),
+                ))
+                .closed
+                .then((value) =>
+                    Navigator.pushReplacementNamed(context, '/home'));
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text(
-              'رقم الموبايل أو كلمة السر غير صحيحين',
-              textAlign: TextAlign.center,
-            ),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height - 100,
-                right: 20,
-                left: 20),
-          )).closed
-              .then(
-                  (value) => Navigator.pushReplacementNamed(context, '/home'));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(
+                  content: const Text(
+                    'رقم الموبايل أو كلمة السر غير صحيحين',
+                    textAlign: TextAlign.center,
+                  ),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  margin: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height - 200,
+                      right: 20,
+                      left: 20),
+                ))
+                .closed
+                .then((value) =>
+                    Navigator.pushReplacementNamed(context, '/home'));
           }
-
-          
 
           // ScaffoldMessenger.of(context).showSnackBar(
           //     const SnackBar(content: Text('Check phone or password')));
         } else {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(
-                content: const Text('أهلا و سهلا بك ',
-                textAlign: TextAlign.center,),
+                content: const Text(
+                  'أهلا و سهلا بك ',
+                  textAlign: TextAlign.center,
+                ),
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
                 margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height - 100,
+                    bottom: MediaQuery.of(context).size.height - 200,
                     right: 20,
                     left: 20),
               ))
@@ -104,7 +106,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: const Color.fromARGB(255, 90, 180, 253),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: SizedBox(
@@ -271,7 +273,7 @@ class _SignInState extends State<SignIn> {
                   borderSide: BorderSide(
                     color: phoneController.text.isEmpty
                         ? Colors.transparent
-                        : const Color.fromRGBO(44, 185, 176, 1),
+                        : const Color.fromARGB(255, 44, 117, 191),
                   )),
               focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(40),
@@ -282,7 +284,7 @@ class _SignInState extends State<SignIn> {
                 Icons.phone_android_rounded,
                 color: phoneController.text.isEmpty
                     ? const Color(0xFF151624).withOpacity(0.5)
-                    : const Color.fromRGBO(44, 185, 176, 1),
+                    : const Color.fromARGB(255, 44, 117, 191),
                 size: 16,
               ),
               suffix: Container(
@@ -291,7 +293,7 @@ class _SignInState extends State<SignIn> {
                 height: 24.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100.0),
-                  color: const Color.fromRGBO(44, 185, 176, 1),
+                  color: const Color.fromARGB(255, 44, 117, 191),
                 ),
                 child: phoneController.text.isEmpty
                     ? const Center()
@@ -354,7 +356,7 @@ class _SignInState extends State<SignIn> {
                     borderSide: BorderSide(
                       color: passController.text.isEmpty
                           ? Colors.transparent
-                          : const Color.fromRGBO(44, 185, 176, 1),
+                          : const Color.fromARGB(255, 44, 117, 191),
                     )),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(40),
@@ -365,7 +367,7 @@ class _SignInState extends State<SignIn> {
                   Icons.lock_outline_rounded,
                   color: passController.text.isEmpty
                       ? const Color(0xFF151624).withOpacity(0.5)
-                      : const Color.fromRGBO(44, 185, 176, 1),
+                      : const Color.fromARGB(255, 44, 117, 191),
                   size: 16,
                 ),
                 suffix: Container(
@@ -374,7 +376,7 @@ class _SignInState extends State<SignIn> {
                   height: 24.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100.0),
-                    color: const Color.fromRGBO(44, 185, 176, 1),
+                    color: const Color.fromARGB(255, 44, 117, 191),
                   ),
                   child: passController.text.isEmpty
                       ? const Center()
@@ -419,7 +421,7 @@ class _SignInState extends State<SignIn> {
         width: size.width * 0.7,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50.0),
-          color: const Color(0xFF21899C),
+          color: const Color.fromARGB(255, 30, 83, 126),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF4C2E84).withOpacity(0.2),

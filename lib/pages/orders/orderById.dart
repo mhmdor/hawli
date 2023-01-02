@@ -11,28 +11,25 @@ import 'package:http/http.dart' as http;
 import '../../widgets/OnGoingTask1.dart';
 
 // ignore: camel_case_types
-class orderBetweenDate extends StatefulWidget {
-  final String start;
-  final String end;
-  const orderBetweenDate({Key? key, required this.start, required this.end})
-      : super(key: key);
+class orderById extends StatefulWidget {
+  final String id;
+
+  const orderById({Key? key, required this.id}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api, no_logic_in_create_state
-  _orderBetweenDate createState() => _orderBetweenDate(start, end);
+  _orderById createState() => _orderById(id);
 }
 
 // ignore: camel_case_types
-class _orderBetweenDate extends State<orderBetweenDate> {
-  final String start;
-  final String end;
-  _orderBetweenDate(this.start, this.end);
+class _orderById extends State<orderById> {
+  final String id;
+
+  _orderById(this.id);
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   // ignore: non_constant_identifier_names
   List Orders = [];
-
-  List _foundorder = [];
 
   var name = '';
   bool isloading = false;
@@ -47,8 +44,7 @@ class _orderBetweenDate extends State<orderBetweenDate> {
   // ignore: prefer_typing_uninitialized_variables
 
   getOrders() async {
-    String url =
-        "${databaseHelper.serverUrl}/distributor/orders-by-date?start=2022-11-12&end=2022-12-03";
+    String url = "${databaseHelper.serverUrl}/distributor/search-by-id?id";
     final prefs = await SharedPreferences.getInstance();
     final Key = 'token';
 
@@ -56,20 +52,18 @@ class _orderBetweenDate extends State<orderBetweenDate> {
 
     final response = await http.get(
       Uri.parse(url).replace(
-        queryParameters: {'start': start, 'end': end},
+        queryParameters: {'id': id},
       ),
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $value'},
     );
 
     setState(() {
       var state = json.decode(response.body);
-      print(state);
+
       isloading = false;
-
-      Orders.addAll(state["orders"]);
-
-      _foundorder = Orders;
-      print(_foundorder);
+      if (state["status"] == true) {
+        Orders.add(state["data"]["order"]);
+      }
     });
   }
 
@@ -103,35 +97,6 @@ class _orderBetweenDate extends State<orderBetweenDate> {
           const Title1(
             tilte: 'نتائج الطلبات المطلوبة',
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                    onPressed: () => _runFilter("mtn"),
-                    child: const Text(
-                      "mtn",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    )),
-                ElevatedButton(
-                    onPressed: () => _runFilter("syriatel"),
-                    child: const Text(
-                      "syriatel",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    )),
-                ElevatedButton(
-                    onPressed: () => _runFilter(""),
-                    child: const Text(
-                      "الكل",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    )),
-              ],
-            ),
-          ),
           Expanded(
             child: isloading
                 ? const Center(child: CircularProgressIndicator())
@@ -140,10 +105,10 @@ class _orderBetweenDate extends State<orderBetweenDate> {
                       left: 25,
                       right: 25,
                     ),
-                    child: Orders == null || Orders.isEmpty
+                    child: Orders.isEmpty
                         ? const Center(
                             child: Text(
-                              'الطلبات غير موجودة ',
+                              'الطلب غير موجود ',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -152,7 +117,7 @@ class _orderBetweenDate extends State<orderBetweenDate> {
                             ),
                           )
                         : ListView.builder(
-                            itemCount: _foundorder.length,
+                            itemCount: Orders.length,
                             itemBuilder: ((context, index) {
                               return Column(
                                 children: [
@@ -160,20 +125,17 @@ class _orderBetweenDate extends State<orderBetweenDate> {
                                     height: 15,
                                   ),
                                   OnGoingTask1(
-                                    code: "${_foundorder[index]["code"]}",
-                                    icon: selecticon(
-                                        _foundorder[index]["status"]),
-                                    color: selectcolor(
-                                        _foundorder[index]["status"]),
-                                    date: "${_foundorder[index]["date"]}",
-                                    name:
-                                        "${_foundorder[index]["user"]["name"]}",
-                                    phone: "${_foundorder[index]["phone"]}",
-                                    value: "${_foundorder[index]["value"]}",
+                                    code: "${Orders[index]["code"]}",
+                                    icon: selecticon(Orders[index]["status"]),
+                                    color: selectcolor(Orders[index]["status"]),
+                                    date: "${Orders[index]["date"]}",
+                                    name: "${Orders[index]["user"]["name"]}",
+                                    phone: "${Orders[index]["phone"]}",
+                                    value: "${Orders[index]["value"]}",
                                     totalvalue:
-                                        "${_foundorder[index]["total_value"]}",
-                                    sim: "${_foundorder[index]["sim"]}",
-                                    id: "${_foundorder[index]["id"]}",
+                                        "${Orders[index]["total_value"]}",
+                                    sim: "${Orders[index]["sim"]}",
+                                    id: "${Orders[index]["id"]}",
                                   ),
                                   const SizedBox(
                                     height: 15,
@@ -186,23 +148,6 @@ class _orderBetweenDate extends State<orderBetweenDate> {
         ],
       ),
     );
-  }
-
-  void _runFilter(String enteredKeyword) {
-    List results = [];
-    if (enteredKeyword.isEmpty) {
-      // if the search field is empty or only contains white-space, we'll display all users
-      results = Orders;
-    } else {
-      results = Orders.where((user) =>
-              user["sim"].toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-      // we use the toLowerCase() method to make it case-insensitive
-    }
-
-    setState(() {
-      _foundorder = results;
-    });
   }
 
   IconData selecticon(status) {

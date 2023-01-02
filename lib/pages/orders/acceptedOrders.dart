@@ -68,7 +68,7 @@ class _HomeState extends State<AcceptedOrders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: const Color.fromARGB(255, 204, 228, 248),
       // ignore: unnecessary_null_comparison
       body: Orders == null || Orders.isEmpty
           ? const Center(child: CircularProgressIndicator())
@@ -120,6 +120,7 @@ class _HomeState extends State<AcceptedOrders> {
                               OnGoingTask1(
                                 icon: Icons.task_alt,
                                 color: Colors.green,
+                                code: "${_foundorder[index]["code"]}",
                                 date: "${_foundorder[index]["date"]}",
                                 name: "${_foundorder[index]["user"]["name"]}",
                                 phone: "${_foundorder[index]["phone"]}",

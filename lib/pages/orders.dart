@@ -22,6 +22,8 @@ class _HomeState extends State<Orders> {
   // ignore: non_constant_identifier_names
   List Orders = [];
   bool isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  late String _reason;
 
   getOrders() async {
     String url = "${databaseHelper.serverUrl}/distributor/pindding-order";
@@ -74,7 +76,7 @@ class _HomeState extends State<Orders> {
                 borderRadius: BorderRadius.circular(24),
               ),
               margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height - 200,
+                  bottom: MediaQuery.of(context).size.height - 400,
                   right: 20,
                   left: 20),
             ))
@@ -100,7 +102,7 @@ class _HomeState extends State<Orders> {
               borderRadius: BorderRadius.circular(24),
             ),
             margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height - 200,
+                bottom: MediaQuery.of(context).size.height - 400,
                 right: 20,
                 left: 20),
           ));
@@ -116,7 +118,7 @@ class _HomeState extends State<Orders> {
               borderRadius: BorderRadius.circular(24),
             ),
             margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height - 200,
+                bottom: MediaQuery.of(context).size.height - 400,
                 right: 20,
                 left: 20),
           ));
@@ -125,8 +127,8 @@ class _HomeState extends State<Orders> {
     });
   }
 
-  void rejectOrder(String id) {
-    databaseHelper.rejectOrder(id).whenComplete(() {
+  void rejectOrder(String id, String rejectReason) {
+    databaseHelper.rejectOrder(id, rejectReason).whenComplete(() {
       if (databaseHelper.status) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(
@@ -140,7 +142,7 @@ class _HomeState extends State<Orders> {
                 borderRadius: BorderRadius.circular(24),
               ),
               margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height - 200,
+                  bottom: MediaQuery.of(context).size.height - 400,
                   right: 20,
                   left: 20),
             ))
@@ -166,7 +168,7 @@ class _HomeState extends State<Orders> {
               borderRadius: BorderRadius.circular(24),
             ),
             margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height - 200,
+                bottom: MediaQuery.of(context).size.height - 400,
                 right: 20,
                 left: 20),
           ));
@@ -182,7 +184,7 @@ class _HomeState extends State<Orders> {
               borderRadius: BorderRadius.circular(24),
             ),
             margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height - 200,
+                bottom: MediaQuery.of(context).size.height - 400,
                 right: 20,
                 left: 20),
           ));
@@ -194,11 +196,13 @@ class _HomeState extends State<Orders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: const Color.fromARGB(255, 204, 228, 248),
       extendBody: true,
       body: Column(
         children: [
-          Title1(tilte: 'طلباتي الجديدة',),
+          const Title1(
+            tilte: 'طلباتي الجديدة',
+          ),
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -213,7 +217,7 @@ class _HomeState extends State<Orders> {
                             "لايوجد طلبات جديدة",
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.white,
+                                color: Colors.blue,
                                 fontWeight: FontWeight.bold),
                           ))
                         : ListView.builder(
@@ -315,11 +319,95 @@ class _HomeState extends State<Orders> {
                                                   ElevatedButton(
                                                     onPressed: () {
                                                       Navigator.pop(context);
-                                                      setState(() {
-                                                        isLoading = true;
-                                                      });
-                                                      rejectOrder(
-                                                          "${Orders[index]["id"]}");
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              content: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: <
+                                                                    Widget>[
+                                                                  const Text(
+                                                                    "أدخل السبب ",
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Color.fromARGB(255, 8, 32, 52),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  Form(
+                                                                    key:
+                                                                        _formKey,
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: <
+                                                                          Widget>[
+                                                                        Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(8.0),
+                                                                          child:
+                                                                              TextFormField(
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            validator:
+                                                                                (value) {
+                                                                              if (value!.isEmpty) {
+                                                                                return 'سبب الرفض  مطلوب';
+                                                                              } else {
+                                                                                return null;
+                                                                              }
+                                                                            },
+                                                                            onSaved:
+                                                                                (value) {
+                                                                              setState(() {
+                                                                                _reason = value.toString();
+                                                                              });
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                        Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(8.0),
+                                                                          child:
+                                                                              ElevatedButton(
+                                                                            style:
+                                                                                ElevatedButton.styleFrom(
+                                                                              backgroundColor: const Color.fromARGB(255, 159, 18, 18),
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                                                                            ),
+                                                                            child:
+                                                                                const Text("رفض الطلب"),
+                                                                            onPressed:
+                                                                                () {
+                                                                              if (_formKey.currentState!.validate()) {
+                                                                                _formKey.currentState!.save();
+                                                                                Navigator.pop(context);
+                                                                                setState(() {
+                                                                                  isLoading = true;
+                                                                                });
+                                                                                rejectOrder("${Orders[index]["id"]}", _reason);
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          });
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -354,6 +442,7 @@ class _HomeState extends State<Orders> {
                                           });
                                     },
                                     child: OnGoingTask(
+                                      code: "${Orders[index]["code"]}",
                                       date: "${Orders[index]["date"]}",
                                       name: "${Orders[index]["user"]["name"]}",
                                       phone: "${Orders[index]["phone"]}",
@@ -378,3 +467,87 @@ class _HomeState extends State<Orders> {
     );
   }
 }
+
+
+// SendUssd(String Company, String Code, String Code1, String Code2) async {
+//     setState(() {
+//       is_loading = true;
+//     });
+//     print(Company);
+
+//     SqlDb sqldb = SqlDb();
+
+//     String star = "*";
+//     String square = "#";
+//     String Ussd;
+//     if (Code2 == "") {
+//       Ussd = star +
+//           Code +
+//           star +
+//           Code1 +
+//           star +
+//           phoneController.text +
+//           star +
+//           valueController.text +
+//           square;
+//     } else {
+//       Ussd = star +
+//           Code +
+//           star +
+//           Code1 +
+//           star +
+//           Code2 +
+//           star +
+//           phoneController.text +
+//           star +
+//           valueController.text +
+//           square;
+//     }
+//     print(Ussd);
+
+//     String phone = phoneController.text;
+//     String value = valueController.text;
+//     String price = priceController.text;
+
+   
+//     try {
+//       var status = await Permission.phone.status;
+//       if (!status.isGranted) {
+//         bool isGranted = await Permission.phone.request().isGranted;
+//         if (!isGranted) return;
+//       }
+//       SimData simData = await SimDataPlugin.getSimData();
+
+//       if (Company == "mtn") {
+//         for (var s in simData.cards) {
+//           if (s.mnc == 2) {
+//             sim = s;
+//           }
+//         }
+//       } else if (Company == "syriatel") {
+//         SimData simData = await SimDataPlugin.getSimData();
+//         for (var s in simData.cards) {
+//           if (s.mnc == 1) {
+//             sim = s;
+//           }
+//         }
+//       }
+//       String? _res = await UssdAdvanced.sendAdvancedUssd(
+//           code: Ussd, subscriptionId: sim.subscriptionId);
+//          int responseSQL = await sqldb.inserData(
+//         "INSERT INTO 'operations' ('phone','value','price','response','company') VALUES ($phone , $value , $price , '$_res','$Company' )");
+
+//     print(responseSQL);
+
+//       setState(() {
+//         _response = _res;
+
+//         is_loading = false;
+//         phoneController.text = "";
+//         valueController.text = "";
+//         priceController.text = "";
+//       });
+//     } catch (e) {
+//       debugPrint(e.toString());
+//     }
+//   }

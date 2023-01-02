@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.blue,
       ),
       home: const SplashScreen(),
       routes: <String,WidgetBuilder>{
@@ -83,11 +83,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.blue,
        drawer:  NavBar(),
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.blue,
         shadowColor: const Color.fromARGB(255, 48, 53, 69),
         toolbarHeight: 60,
         title:  Text(
@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: _pageNo[selectedpage],
       ),
       bottomNavigationBar: ConvexAppBar(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.blue,
         height: 70,
         curveSize: 120,
         items: const [

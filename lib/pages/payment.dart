@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hawli/controller/databasehelper.dart';
-import 'package:hawli/pages/paymentsUser.dart';
-import 'package:hawli/widgets/news.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -129,7 +128,7 @@ class _HomeState extends State<Payment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blueGrey[800],
+        backgroundColor: const Color.fromARGB(255, 204, 228, 248),
         extendBody: true,
         body: _buildBody());
   }
@@ -147,9 +146,10 @@ class _HomeState extends State<Payment> {
                   child: ListTile(
                     leading: const Icon(Icons.search),
                     title: TextField(
+                      textAlign: TextAlign.center,
                         controller: controller,
                         decoration: const InputDecoration(
-                            hintText: 'Search', border: InputBorder.none),
+                            hintText: 'بحث', border: InputBorder.none),
                         onChanged: (value) {
                           setState(() {
                             _searchResult = value;
@@ -188,346 +188,339 @@ class _HomeState extends State<Payment> {
                         ? const CircularProgressIndicator()
                         : SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 4,
-                                  color: const Color.fromARGB(255, 42, 41, 41),
+                            child: DataTable(
+                              sortAscending: isAscending,
+                              sortColumnIndex: sortColumnIndex,
+                              border: TableBorder.all(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Color.fromARGB(255, 19, 29, 39),
+                                  width: 1.5),
+                              dataRowHeight: 70,
+                              headingRowHeight: 65,
+                              dataTextStyle: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 9, 39, 72)),
+                              headingRowColor: MaterialStateColor.resolveWith(
+                                  (states) =>
+                                      const Color.fromARGB(255, 245, 245, 245)),
+                              columns: <DataColumn>[
+                                DataColumn(
+                                  label: const Text(
+                                    'الاسم',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.blue,
+                                        fontSize: 18),
+                                  ),
+                                  onSort: onSort,
                                 ),
-                              ),
-                              child: DataTable(
-                                sortAscending: isAscending,
-                                sortColumnIndex: sortColumnIndex,
-                                border: TableBorder.symmetric(
-                                  inside: const BorderSide(width: 1.5),
+                                const DataColumn(
+                                  label: Text(
+                                    'اضافة رصيد',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.blue,
+                                        fontSize: 18),
+                                  ),
+                                  // onSort: onSort,
                                 ),
-                                headingRowColor: MaterialStateColor.resolveWith(
-                                    (states) => Colors.blueGrey),
-                                dataRowColor: MaterialStateColor.resolveWith(
-                                    (states) => const Color.fromARGB(
-                                        255, 247, 246, 246)),
-                                columns: <DataColumn>[
-                                  DataColumn(
-                                    label: const Text(
-                                      'الاسم',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.white,
-                                          fontSize: 18),
-                                    ),
-                                    onSort: onSort,
+                                const DataColumn(
+                                  label: Text(
+                                    'خصم رصيد',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.blue,
+                                        fontSize: 18),
                                   ),
-                                  const DataColumn(
-                                    label: Text(
-                                      'اضافة رصيد',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.white,
-                                          fontSize: 18),
-                                    ),
-                                    // onSort: onSort,
+                                  // onSort: onSort,
+                                ),
+                                DataColumn(
+                                  label: const Text(
+                                    'رصيد',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.blue,
+                                        fontSize: 18),
                                   ),
-                                  const DataColumn(
-                                    label: Text(
-                                      'خصم رصيد',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.white,
-                                          fontSize: 18),
-                                    ),
-                                    // onSort: onSort,
+                                  onSort: onSort,
+                                ),
+                                DataColumn(
+                                  label: const Text(
+                                    'الرقم',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.blue,
+                                        fontSize: 18),
                                   ),
-                                  DataColumn(
-                                    label: const Text(
-                                      'رصيد',
-                                      style: TextStyle(
+                                  onSort: onSort,
+                                ),
+                              ],
+                              rows: List.generate(
+                                usersFiltered.length,
+                                (index) => DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Center(
+                                      child: Text(
+                                        usersFiltered[index]["name"],
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.white,
-                                          fontSize: 18),
-                                    ),
-                                    onSort: onSort,
-                                  ),
-                                  DataColumn(
-                                    label: const Text(
-                                      'الرقم',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.white,
-                                          fontSize: 18),
-                                    ),
-                                    onSort: onSort,
-                                  ),
-                                ],
-                                rows: List.generate(
-                                  usersFiltered.length,
-                                  (index) => DataRow(
-                                    cells: <DataCell>[
-                                      DataCell(Center(
-                                        child: Text(
-                                          usersFiltered[index]["name"],
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
                                         ),
-                                      )),
-                                      DataCell(
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 23, 118, 14)),
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    content: Stack(
-                                                      children: <Widget>[
-                                                        Form(
-                                                          key: _formKey,
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: <Widget>[
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child: Text(
-                                                                  usersFiltered[
-                                                                          index]
-                                                                      ["name"],
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
+                                      ),
+                                    )),
+                                    DataCell(
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 23, 118, 14)),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  content: Stack(
+                                                    children: <Widget>[
+                                                      Form(
+                                                        key: _formKey,
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                usersFiltered[
+                                                                        index]
+                                                                    ["name"],
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
                                                                 ),
                                                               ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    TextFormField(
-                                                                  decoration: const InputDecoration(
-                                                                      labelStyle: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .bold),
-                                                                      labelText:
-                                                                          'أدخل الرصيد',
-                                                                      hintText:
-                                                                          'الرصيد'),
-                                                                  validator:
-                                                                      (value) {
-                                                                    if (value!
-                                                                        .isEmpty) {
-                                                                      return 'الرصيد مطلوب';
-                                                                    } else {
-                                                                      return null;
-                                                                    }
-                                                                  },
-                                                                  onSaved:
-                                                                      (value) {
-                                                                    setState(
-                                                                        () {
-                                                                      balance =
-                                                                          value
-                                                                              .toString();
-                                                                    });
-                                                                  },
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  TextFormField(
+                                                                decoration: const InputDecoration(
+                                                                    labelStyle: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold),
+                                                                    labelText:
+                                                                        'أدخل الرصيد',
+                                                                    hintText:
+                                                                        'الرصيد'),
+                                                                validator:
+                                                                    (value) {
+                                                                  if (value!
+                                                                      .isEmpty) {
+                                                                    return 'الرصيد مطلوب';
+                                                                  } else {
+                                                                    return null;
+                                                                  }
+                                                                },
+                                                                onSaved:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    balance = value
+                                                                        .toString();
+                                                                  });
+                                                                },
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
                                                               ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    ElevatedButton(
-                                                                  child: const Text(
-                                                                      " إضافة رصيد"),
-                                                                  onPressed:
-                                                                      () {
-                                                                    if (_formKey
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  ElevatedButton(
+                                                                child: const Text(
+                                                                    " إضافة رصيد"),
+                                                                onPressed: () {
+                                                                  if (_formKey
+                                                                      .currentState!
+                                                                      .validate()) {
+                                                                    _formKey
                                                                         .currentState!
-                                                                        .validate()) {
-                                                                      _formKey
-                                                                          .currentState!
-                                                                          .save();
+                                                                        .save();
 
-                                                                      payment(
-                                                                          usersFiltered[index]["id"]
-                                                                              .toString(),
-                                                                          balance
-                                                                              .toString());
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    }
-                                                                  },
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
+                                                                    payment(
+                                                                        usersFiltered[index]["id"]
+                                                                            .toString(),
+                                                                        balance
+                                                                            .toString());
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                },
+                                                              ),
+                                                            )
+                                                          ],
                                                         ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                });
-                                          },
-                                          child: const Text("إضافة رصيد"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: const Text(
+                                          "إضافة رصيد",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      DataCell(
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 148, 29, 20)),
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    content: Stack(
-                                                      children: <Widget>[
-                                                        Form(
-                                                          key: _formKey,
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: <Widget>[
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child: Text(
-                                                                  usersFiltered[
-                                                                          index]
-                                                                      ["name"],
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
+                                    ),
+                                    DataCell(
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 148, 29, 20)),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  content: Stack(
+                                                    children: <Widget>[
+                                                      Form(
+                                                        key: _formKey,
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                usersFiltered[
+                                                                        index]
+                                                                    ["name"],
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
                                                                 ),
                                                               ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    TextFormField(
-                                                                  decoration: const InputDecoration(
-                                                                      labelStyle: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .bold),
-                                                                      labelText:
-                                                                          'أدخل الرصيد',
-                                                                      hintText:
-                                                                          'الرصيد'),
-                                                                  validator:
-                                                                      (value) {
-                                                                    if (value!
-                                                                        .isEmpty) {
-                                                                      return 'الرصيد مطلوب';
-                                                                    } else {
-                                                                      return null;
-                                                                    }
-                                                                  },
-                                                                  onSaved:
-                                                                      (value) {
-                                                                    setState(
-                                                                        () {
-                                                                      balance =
-                                                                          "-$value";
-                                                                    });
-                                                                  },
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  TextFormField(
+                                                                decoration: const InputDecoration(
+                                                                    labelStyle: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold),
+                                                                    labelText:
+                                                                        'أدخل الرصيد',
+                                                                    hintText:
+                                                                        'الرصيد'),
+                                                                validator:
+                                                                    (value) {
+                                                                  if (value!
+                                                                      .isEmpty) {
+                                                                    return 'الرصيد مطلوب';
+                                                                  } else {
+                                                                    return null;
+                                                                  }
+                                                                },
+                                                                onSaved:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    balance =
+                                                                        "-$value";
+                                                                  });
+                                                                },
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
                                                               ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    ElevatedButton(
-                                                                  child: const Text(
-                                                                      " خصم رصيد"),
-                                                                  onPressed:
-                                                                      () {
-                                                                    if (_formKey
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  ElevatedButton(
+                                                                child: const Text(
+                                                                    " خصم رصيد"),
+                                                                onPressed: () {
+                                                                  if (_formKey
+                                                                      .currentState!
+                                                                      .validate()) {
+                                                                    _formKey
                                                                         .currentState!
-                                                                        .validate()) {
-                                                                      _formKey
-                                                                          .currentState!
-                                                                          .save();
-                                                                      payment(
-                                                                          usersFiltered[index]["id"]
-                                                                              .toString(),
-                                                                          balance
-                                                                              .toString());
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    }
-                                                                  },
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
+                                                                        .save();
+                                                                    payment(
+                                                                        usersFiltered[index]["id"]
+                                                                            .toString(),
+                                                                        balance
+                                                                            .toString());
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                },
+                                                              ),
+                                                            )
+                                                          ],
                                                         ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                });
-                                          },
-                                          child: const Text("خصم رصيد"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: const Text(
+                                          "خصم رصيد",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      DataCell(Center(
-                                        child: Text(
-                                          usersFiltered[index]["balance"]
-                                              .toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    ),
+                                    DataCell(Center(
+                                      child: Text(
+                                        usersFiltered[index]["balance"]
+                                            .toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      )),
-                                      DataCell(Center(
-                                        child: Text(
-                                          usersFiltered[index]["id"].toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      ),
+                                    )),
+                                    DataCell(Center(
+                                      child: Text(
+                                        usersFiltered[index]["id"].toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      )),
-                                    ],
-                                  ),
+                                      ),
+                                    )),
+                                  ],
                                 ),
                               ),
                             ),

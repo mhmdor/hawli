@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hawli/controller/databasehelper.dart';
+import 'package:hawli/pages/about.dart';
 import 'package:hawli/pages/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,13 +19,77 @@ class _NavBarState extends State<NavBar> {
 
   var name = '';
   var phone = '';
+  var newPass = "";
+  var oldPass = "";
+  var confPass = "";
+
+  final _formKey = GlobalKey<FormState>();
+  final _passKey = GlobalKey<FormFieldState>();
 
   getUser() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       name = prefs.getString('name')!;
       phone = prefs.getString('phone')!;
+    });
+  }
+
+  void changePasswprd() {
+    DatabaseHelper()
+        .changePassword(newPass, oldPass, confPass)
+        .whenComplete(() {
       
+      if (databaseHelper.status) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text(
+            'تم تغيير كلمة السر بنجاح',
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          margin: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.height - 400,
+              right: 20,
+              left: 20),
+        ));
+      } else {
+        if (databaseHelper.time) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text(
+              'خطأ بالأتصال بالسيرفر يرجى المحاولة لاحقا',
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height - 400,
+                right: 20,
+                left: 20),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text(
+              'عذرا العملية خاطئة',
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height - 400,
+                right: 20,
+                left: 20),
+          ));
+        }
+      }
     });
   }
 
@@ -37,7 +102,7 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.blue,
       child: ListView(
         children: [
           Container(
@@ -74,7 +139,7 @@ class _NavBarState extends State<NavBar> {
                     ),
                     Text(
                       phone,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Color.fromARGB(255, 116, 147, 162),
                           fontWeight: FontWeight.bold,
                           fontSize: 16),
@@ -92,25 +157,136 @@ class _NavBarState extends State<NavBar> {
           ),
           ListTile(
             leading: const Icon(
-              Icons.favorite,
+              Icons.password,
               color: Colors.white,
             ),
             title: const Text(
-              'Favorites',
+              'تغيير كلمة السر',
               style: TextStyle(color: Colors.white),
             ),
-            onTap: () => null,
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SingleChildScrollView(
+                      child: AlertDialog(
+                        content: Stack(
+                          children: <Widget>[
+                            Form(
+                              key: _formKey,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      obscureText: true,
+                                      textAlign: TextAlign.center,
+                                      decoration: const InputDecoration(
+                                          labelStyle: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                          labelText: 'أدخل كلمة السر القديمة',
+                                          hintText: 'كلمة السر القديمة'),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'كلمة السر القديمة مطلوبة';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onSaved: (value) {
+                                        setState(() {
+                                          oldPass = value.toString();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      key: _passKey,
+                                      obscureText: true,
+                                      textAlign: TextAlign.center,
+                                      decoration: const InputDecoration(
+                                          labelStyle: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                          labelText: 'أدخل كلمة السر الجديدة',
+                                          hintText: 'كلمة السر الجديدة'),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'كلمة السر الجديدة مطلوبة';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onSaved: (value) {
+                                        setState(() {
+                                          newPass = value.toString();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      textAlign: TextAlign.center,
+                                      decoration: const InputDecoration(
+                                          labelStyle: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                          labelText: 'أدخل تاكيد كلمة السر',
+                                          hintText: 'تأكيد كلمة السر'),
+                                      validator: (confirmPassword) {
+                                        if (confirmPassword != null &&
+                                            confirmPassword.isEmpty) {
+                                          return 'تأكيد كلمة السر مطلوب';
+                                        }
+                                        var password =
+                                            _passKey.currentState?.value;
+                                        if (confirmPassword != null &&
+                                            confirmPassword
+                                                    .compareTo(password) !=
+                                                0) {
+                                          return 'كلمة السر غير مطابقة';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onSaved: (value) {
+                                        setState(() {
+                                          confPass = value.toString();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      child: const Text("تغيير كلمة السر"),
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          _formKey.currentState!.save();
+                                          Navigator.pop(context);
+                                          Navigator.of(context).pop();
+                                          changePasswprd();
+                                        }
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            },
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            title: const Text(
-              'Friends',
-              style: TextStyle(color: Colors.white),
-            ),
-            onTap: () => null,
+          const Divider(
+            color: Colors.white,
+          ),
+          const Divider(
+            color: Colors.white,
           ),
           ListTile(
             leading: const Icon(
@@ -118,19 +294,12 @@ class _NavBarState extends State<NavBar> {
               color: Colors.white,
             ),
             title: const Text(
-              'Share',
+              'حول التطبيق',
               style: TextStyle(color: Colors.white),
             ),
-            onTap: () => null,
-          ),
-          const ListTile(
-            leading: Icon(
-              Icons.notifications,
-              color: Colors.white,
-            ),
-            title: Text(
-              'Request',
-              style: TextStyle(color: Colors.white),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const About()),
             ),
           ),
           const Divider(
@@ -154,20 +323,15 @@ class _NavBarState extends State<NavBar> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: Stack(
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Positioned(
-                            right: -40.0,
-                            top: -40.0,
-                            child: InkResponse(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const CircleAvatar(
-                                child: Icon(Icons.close),
-                                backgroundColor: Colors.red,
-                              ),
-                            ),
+                          const Text(
+                            " هل انت متأكد من تسجيل الخروج ؟",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                           ElevatedButton(
                               onPressed: () {

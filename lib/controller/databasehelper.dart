@@ -71,7 +71,37 @@ class DatabaseHelper {
     print(data);
   }
 
-  Future rejectOrder(String id) async {
+  Future addNews(String title) async {
+    String url = "$serverUrl/distributor/news";
+    final prefs = await SharedPreferences.getInstance();
+    final Key = 'token';
+    final value = prefs.get(Key);
+
+    final response = await http.post(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $value'
+    }, body: {
+      "title": title,
+    }).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        status = false;
+        time = true;
+
+        return Future.error('error');
+      },
+    );
+    var data = json.decode(response.body);
+
+    status = data["status"];
+
+    print(status);
+    time = false;
+
+    print(data);
+  }
+
+  Future rejectOrder(String id, String rejectreason) async {
     String url = "$serverUrl/distributor/reject-order";
     final prefs = await SharedPreferences.getInstance();
     final Key = 'token';
@@ -82,6 +112,7 @@ class DatabaseHelper {
       'Authorization': 'Bearer $value'
     }, body: {
       "order_id": id,
+      "reject_reason": rejectreason,
     }).timeout(
       const Duration(seconds: 10),
       onTimeout: () {
@@ -200,10 +231,9 @@ class DatabaseHelper {
         return Future.error('error');
       },
     );
-   
 
     status = response.body.contains('success');
-  
+
     time = false;
   }
 
@@ -233,6 +263,72 @@ class DatabaseHelper {
     var data = json.decode(response.body);
 
     print(data);
+    time = false;
+
+    print(data);
+  }
+
+  Future addDeposit(String id, String value1, String desc) async {
+    String url = "$serverUrl/distributor/deposits";
+    final prefs = await SharedPreferences.getInstance();
+    final Key = 'token';
+    final value = prefs.get(Key);
+
+    final response = await http.post(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $value'
+    }, body: {
+      "user_id": id,
+      "value": value1,
+      "description": desc,
+    }).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        status = false;
+        time = true;
+
+        return Future.error('error');
+      },
+    );
+
+    status = response.body.contains('success');
+    var data = json.decode(response.body);
+
+    print(data);
+    time = false;
+
+    print(data);
+  }
+
+  Future changePassword(
+      String newPassword, String oldPassword, String confPassword) async {
+    String url = "$serverUrl/distributor/change-password";
+    final prefs = await SharedPreferences.getInstance();
+    final Key = 'token';
+    final value = prefs.get(Key);
+
+    final response = await http.post(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $value'
+    }, body: {
+      "old_password": oldPassword,
+      "new_password": newPassword,
+      "new_password_confirmation": confPassword,
+    }).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        status = false;
+        time = true;
+
+        return Future.error('error');
+      },
+    );
+
+    status = response.body.contains('successfully');
+    print(status);
+    var data = json.decode(response.body);
+
+    print(data["message"]);
     time = false;
 
     print(data);

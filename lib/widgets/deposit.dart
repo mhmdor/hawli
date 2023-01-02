@@ -1,73 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:hawli/controller/databasehelper.dart';
 
-class OnGoingTask extends StatelessWidget {
-  final String name;
+class Deposit extends StatelessWidget {
+  
   final String id;
   final String value;
-  final String sim;
-  final String totalvalue;
+  final String desc;
+  
   final String date;
-  final String phone;
-  final String code;
+ 
+  
 
-  const OnGoingTask({
+  const Deposit({
     Key? key,
-    required this.name,
+   
     required this.value,
-    required this.sim,
-    required this.totalvalue,
+    
+  required this.desc,
     required this.date,
-    required this.phone,
-    required this.id, required this.code,
+    
+    required this.id,
+    
+    
     
   }) : super(key: key);
- Widget text() {
-    // ignore: unnecessary_null_comparison
-    if (phone == 'null') {
-      return Text(
-        code,
-        style: const TextStyle(
-          color: Color.fromARGB(255, 138, 138, 138),
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-      // ignore: unnecessary_null_comparison
-    } else if (code == 'null') {
-      return Text(
-        phone,
-        style: const TextStyle(
-          color: Color.fromARGB(255, 138, 138, 138),
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-    } else {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-      
-        children: [
-          Text(
-            phone,
-            style: const TextStyle(
-              color: Color.fromARGB(255, 138, 138, 138),
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            code,
-            style: const TextStyle(
-              color: Color.fromARGB(255, 138, 138, 138),
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      );
-    }
-  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -93,7 +49,7 @@ class OnGoingTask extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    name,
+                    desc,
                     style: TextStyle(
                       color: Colors.blueGrey[700],
                       fontWeight: FontWeight.bold,
@@ -102,27 +58,7 @@ class OnGoingTask extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const Icon(
-                        Icons.phone_android_outlined,
-                        color: Color.fromARGB(255, 20, 29, 34),
-                      ),
-                      text(),
-                      Text(
-                        sim,
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 138, 138, 138),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                  
                   const SizedBox(
                     height: 10,
                   ),
@@ -147,15 +83,7 @@ class OnGoingTask extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
-                            totalvalue,
-                            style: TextStyle(
-                                color: Colors.blueGrey[900],
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
+                          
                         ],
                       ),
                     ),
@@ -200,9 +128,9 @@ class OnGoingTask extends StatelessWidget {
                 height: 10,
               ),
               const Icon(
-                Icons.card_travel,
+                Icons.add_box,
                 size: 50,
-                color: Color.fromARGB(255, 221, 95, 23),
+                color: Color.fromARGB(255, 155, 66, 34),
               ),
             ],
           )

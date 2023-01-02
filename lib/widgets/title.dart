@@ -12,7 +12,7 @@ class Title1 extends StatelessWidget {
         constraints: const BoxConstraints(
             minHeight: 80, minWidth: double.infinity, maxHeight: 80),
         decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 247, 246, 246),
+          color: Color.fromARGB(255, 32, 102, 159),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(20.0),
             bottomRight: Radius.circular(20.0),
@@ -21,7 +21,7 @@ class Title1 extends StatelessWidget {
         child: Text(tilte,
         textAlign: TextAlign.center,
         style: const TextStyle(
-          color: Color.fromARGB(255, 49, 64, 71),
+          color: Color.fromARGB(255, 236, 236, 236),
           height: 2.5,
           fontSize: 20,
           fontWeight: FontWeight.bold

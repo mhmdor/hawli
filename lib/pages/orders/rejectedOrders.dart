@@ -56,7 +56,7 @@ class _HomeState extends State<RejectedOrders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: const Color.fromARGB(255, 204, 228, 248),
       // ignore: unnecessary_null_comparison
       body: Orders == null || Orders.isEmpty
           ? const Center(child: CircularProgressIndicator())
@@ -115,6 +115,8 @@ class _HomeState extends State<RejectedOrders> {
                                 totalvalue: "${_foundorder[index]["total_value"]}",
                                 sim: "${_foundorder[index]["sim"]}",
                                 id: "${_foundorder[index]["id"]}",
+                                code: "${_foundorder[index]["code"]}",
+                                reason:"${_foundorder[index]["reject_reason"]}" ,
                               ),
                             ],
                           );

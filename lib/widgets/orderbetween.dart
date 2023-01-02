@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hawli/pages/orders/orderBetweenDate.dart';
+import 'package:hawli/pages/orders/orderById.dart';
 import 'package:intl/intl.dart';
 
 class orderbetween extends StatelessWidget {
   TextEditingController dateinput = TextEditingController();
   TextEditingController dateoutput = TextEditingController();
+  TextEditingController idinput = TextEditingController();
   late String formattedDate1;
   late String formattedDate;
+  late String id;
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
-      
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            tooltip: "بحث",
+              tooltip: "بحث",
               onPressed: () {
                 showDialog(
                     context: context,
@@ -135,9 +137,66 @@ class orderbetween extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.date_range,
-               
                 size: 40,
-                color: Colors.white,
+                color: Color.fromARGB(255, 8, 94, 164),
+              )),
+          IconButton(
+              tooltip: "بحث",
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Stack(
+                          children: <Widget>[
+                            Form(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Text(
+                                    "طلب عن طريق الرقم",
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        controller: idinput,
+                                        decoration: const InputDecoration(
+                                            icon: Icon(Icons.search),
+                                            labelText:
+                                                "ادخل رقم الطلب المطلوب "),
+                                        onChanged: (value) {
+                                          id = idinput.text;
+                                        },
+                                      )),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                        child: const Text("بحث عن الطلب"),
+                                        onPressed: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      orderById(
+                                                        id: id,
+                                                      )),
+                                            )),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              },
+              icon: const Icon(
+                Icons.search_rounded,
+                size: 40,
+                color: Color.fromARGB(255, 8, 94, 164),
               ))
         ],
       ),

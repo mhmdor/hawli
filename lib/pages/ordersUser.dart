@@ -10,10 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
-class EntrustingUser extends StatefulWidget {
+class EntrustingUser2 extends StatefulWidget {
   final String name;
   final String id;
-  const EntrustingUser({Key? key, required this.name, required this.id})
+  const EntrustingUser2({Key? key, required this.name, required this.id})
       : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class EntrustingUser extends StatefulWidget {
   _HomeState createState() => _HomeState(name, id);
 }
 
-class _HomeState extends State<EntrustingUser> {
+class _HomeState extends State<EntrustingUser2> {
   final String name;
   final String id;
 
@@ -40,21 +40,19 @@ class _HomeState extends State<EntrustingUser> {
 
   getorders() async {
     print(id);
-    String url = "${databaseHelper.serverUrl}/distributor/orders/user/1";
+    String url = "${databaseHelper.serverUrl}/distributor/orders/user/$id";
     final prefs = await SharedPreferences.getInstance();
     // ignore: constant_identifier_names
     const Key = 'token';
     final value = prefs.get(Key);
 
     final response = await http.get(
-      Uri.parse(url).replace(
-        queryParameters: {'distributor_user_id': id},
-      ),
+      Uri.parse(url),
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $value'},
     );
 
     var state = json.decode(response.body);
-
+    print(state);
     orders.addAll(state["orders"]);
 
     print(orders);
@@ -78,7 +76,7 @@ class _HomeState extends State<EntrustingUser> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.blue,
         shadowColor: const Color.fromARGB(255, 48, 53, 69),
         toolbarHeight: 60,
         title: Text(
@@ -88,7 +86,7 @@ class _HomeState extends State<EntrustingUser> {
           ),
         ),
       ),
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: const Color.fromARGB(255, 204, 228, 248),
       extendBody: true,
       body: Column(
         children: [
@@ -109,7 +107,7 @@ class _HomeState extends State<EntrustingUser> {
                             "لايوجد طلبات ",
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.white,
+                                color: Colors.blue,
                                 fontWeight: FontWeight.bold),
                           ))
                         : ListView.builder(
@@ -121,8 +119,9 @@ class _HomeState extends State<EntrustingUser> {
                                     height: 15,
                                   ),
                                   OnGoingTask1(
-                                    icon: Icons.task_alt,
-                                    color: Colors.green,
+                                    code: "${orders[index]["code"]}",
+                                    icon: selecticon(orders[index]["status"]),
+                                    color: selectcolor(orders[index]["status"]),
                                     date: "${orders[index]["date"]}",
                                     name: "${orders[index]["user"]["name"]}",
                                     phone: "${orders[index]["phone"]}",
@@ -131,6 +130,7 @@ class _HomeState extends State<EntrustingUser> {
                                         "${orders[index]["total_value"]}",
                                     sim: "${orders[index]["sim"]}",
                                     id: "${orders[index]["id"]}",
+                                    reason: "${orders[index]["reject_reason"]}",
                                   ),
                                   const SizedBox(
                                     height: 15,
@@ -143,5 +143,25 @@ class _HomeState extends State<EntrustingUser> {
         ],
       ),
     );
+  }
+
+  IconData selecticon(status) {
+    if (status == 2) {
+      return Icons.card_travel;
+    } else if (status == 0) {
+      return Icons.cancel_sharp;
+    } else {
+      return Icons.task_alt;
+    }
+  }
+
+  Color selectcolor(status) {
+    if (status == 2) {
+      return Colors.blue;
+    } else if (status == 0) {
+      return Colors.red;
+    } else {
+      return Colors.green;
+    }
   }
 }

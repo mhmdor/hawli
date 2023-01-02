@@ -29,11 +29,11 @@ class _RegisterUserState extends State<RegisterUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: const Color.fromARGB(255, 204, 228, 248),
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blueGrey,
-        shadowColor: const Color.fromARGB(255, 48, 53, 69),
+        backgroundColor: Colors.blue,
+        shadowColor: const Color.fromARGB(255, 3, 14, 50),
         toolbarHeight: 60,
         title: Text(
           name,
@@ -79,16 +79,19 @@ class _SignUpFormState extends State<SignUpForm> {
     // loadGenderList();
     // Build a Form widget using the _formKey we created above
     return Card(
+      margin: const EdgeInsets.all(10),
       elevation: 5,
-      color: const Color.fromARGB(255, 237, 241, 243),
+      color: const Color.fromARGB(255, 255, 255, 255),
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: ListView(
-              children: getFormWidget(),
+            child: SingleChildScrollView(
+              child: Column(
+                children: getFormWidget(),
+              ),
             ),
           ),
         ),
@@ -101,8 +104,8 @@ class _SignUpFormState extends State<SignUpForm> {
     formWidget.add(Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 40),
       decoration: BoxDecoration(
-          border: Border.all(width: 4, color: Colors.blueGrey),
-          borderRadius: BorderRadius.circular(25)),
+          border: Border.all(width: 3, color: Colors.blue),
+          borderRadius: BorderRadius.circular(10)),
       child: const Center(
         child: Text(
           'عميل جديد',
@@ -110,7 +113,7 @@ class _SignUpFormState extends State<SignUpForm> {
             fontSize: 24,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 51, 65, 72),
+            color: Color.fromARGB(255, 4, 13, 34),
           ),
         ),
       ),
@@ -119,6 +122,7 @@ class _SignUpFormState extends State<SignUpForm> {
       decoration: const InputDecoration(
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
           labelText: 'أدخل أسم العميل',
+
           hintText: 'الأسم'),
       validator: (value) {
         if (value!.isEmpty) {
@@ -232,11 +236,11 @@ class _SignUpFormState extends State<SignUpForm> {
       decoration: const InputDecoration(
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
           hintText: 'أقل مبلغ للدخول',
-          labelText: ' أدخل النسبة '),
+          labelText: ' أدخل الحد الأدنى لتنفيذ العمليات '),
       keyboardType: TextInputType.number,
       validator: (value) {
         if (value!.isEmpty) {
-          return 'النسبة مطلوبة ';
+          return 'الحد الأدنى مطلوب ';
         } else {
           return null;
         }
@@ -394,6 +398,10 @@ class _SignUpFormState extends State<SignUpForm> {
                   style: TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold, height: 2),
                 )),
+          ));
+
+          formWidget.add(const SizedBox(
+            height: 10,
           ));
 
     return formWidget;

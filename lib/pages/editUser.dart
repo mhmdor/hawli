@@ -8,29 +8,30 @@ class EditUser extends StatefulWidget {
   final String minBalance;
   final String id;
   final String ratio;
+  final String address;
 
   const EditUser(
       {Key? key,
       required this.name,
       required this.minBalance,
       required this.id,
-      required this.ratio})
+      required this.ratio, required this.address})
       : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api, no_logic_in_create_state
-  _EditUserState createState() => _EditUserState(name, minBalance, id, ratio);
+  _EditUserState createState() => _EditUserState(name, minBalance, id, ratio,address);
 }
 
 class _EditUserState extends State<EditUser> {
   var name1 = '';
   final String name;
-
+final String address;
   final String minBalance;
   final String id;
   final String ratio;
 
-  _EditUserState(this.name, this.minBalance, this.id, this.ratio);
+  _EditUserState(this.name, this.minBalance, this.id, this.ratio, this.address);
 
   getUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -45,6 +46,7 @@ class _EditUserState extends State<EditUser> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _ratio = TextEditingController();
   final TextEditingController _minBalance = TextEditingController();
+  final TextEditingController _address = TextEditingController();
   bool isLoading = false;
 
   @override
@@ -53,6 +55,7 @@ class _EditUserState extends State<EditUser> {
     getUser();
     _name.value = TextEditingValue(text: name);
     _ratio.value = TextEditingValue(text: ratio);
+    _address.value = TextEditingValue(text: address);
     _minBalance.value = TextEditingValue(text: minBalance);
   }
 
@@ -61,8 +64,8 @@ class _EditUserState extends State<EditUser> {
     formWidget.add(Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 40),
       decoration: BoxDecoration(
-          border: Border.all(width: 4, color: Colors.blueGrey),
-          borderRadius: BorderRadius.circular(25)),
+          border: Border.all(width: 3, color: Colors.blue),
+          borderRadius: BorderRadius.circular(10)),
       child: const Center(
         child: Text(
           'تعديل العميل',
@@ -70,7 +73,7 @@ class _EditUserState extends State<EditUser> {
             fontSize: 24,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 51, 65, 72),
+            color: Color.fromARGB(255, 4, 13, 34),
           ),
         ),
       ),
@@ -117,20 +120,38 @@ class _EditUserState extends State<EditUser> {
       controller: _minBalance,
       decoration: const InputDecoration(
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
-          hintText: 'أقل مبلغ للدخول',
-          labelText: '  النسبة '),
+          hintText: 'الحد الأدنى  للدخول',
+          labelText: '  الحد الأدنى '),
       keyboardType: TextInputType.number,
       validator: (value) {
         if (value!.isEmpty) {
-          return 'النسبة مطلوبة ';
+          return 'الحد الأدنى مطلوب ';
         } else {
           return null;
         }
       },
     ));
-    formWidget.add(const SizedBox(
+
+     formWidget.add(const SizedBox(
       height: 8,
     ));
+
+    formWidget.add(TextFormField(
+      controller: _address,
+      decoration: const InputDecoration(
+          labelStyle: TextStyle(fontWeight: FontWeight.bold),
+          hintText: 'العنوان',
+          labelText: '  العنوان '),
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'العنوان مطلوب ';
+        } else {
+          return null;
+        }
+      },
+    ));
+    
 
     formWidget.add(const SizedBox(
       height: 50,
@@ -190,7 +211,7 @@ class _EditUserState extends State<EditUser> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(
                   content: const Text(
-                    'تم تسجيل العميل بنجاح',
+                    'تم تعديل العميل بنجاح',
                     textAlign: TextAlign.center,
                   ),
                   backgroundColor: Colors.green,
@@ -231,10 +252,10 @@ class _EditUserState extends State<EditUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[800],
+      backgroundColor: const Color.fromARGB(255, 204, 228, 248),
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.blue,
         shadowColor: const Color.fromARGB(255, 48, 53, 69),
         toolbarHeight: 60,
         title: Text(
